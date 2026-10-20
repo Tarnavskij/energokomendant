@@ -14,5 +14,11 @@ data class EventChoice(
 data class GameEvent(
     val title: String,
     val description: String,
-    val choices: List<EventChoice>
+    val choices: List<EventChoice>,
+    /** Если это улучшение куплено — событие не выпадает */
+    val blockedByUpgrade: String? = null,
+    /** Если это улучшение куплено — эффекты события уменьшаются вдвое */
+    val mitigatedByUpgrade: String? = null,
+    /** Текст-подсказка, который показывается, если улучшение сработало */
+    val mitigationNote: String? = null
 )

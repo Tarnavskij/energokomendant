@@ -27,8 +27,7 @@ class SubstationViewModel : ViewModel() {
     val state: StateFlow<SubstationState> = _state.asStateFlow()
 
     fun start() {
-        val bonusTime = if (MetaRepository.hasItem("stabilizer")) 10f else 0f
-        val total = 60f + bonusTime
+        val total = 60f // Убрали бонусное время, теперь Стабилизатор работает иначе
         _state.value = SubstationState(isRunning = true, load = 20f, timeLeft = total, totalTime = total)
         viewModelScope.launch {
             var lastTime = System.currentTimeMillis()
@@ -46,7 +45,13 @@ class SubstationViewModel : ViewModel() {
         val s = _state.value
         if (!s.isRunning) return
 
-        val growthMultiplier = if (MetaRepository.hasEmployee("dispatcher")) 0.7f else 1f
+        // Теперь и Стабилизатор, и Диспетчер замедляют рост нагрузки
+        val growthMultiplier = when {
+            MetaRepository.hasEmployee("dispatcher") && MetaRepository.hasItem("stabilizer") -> 0.5f
+            MetaRepository.hasEmployee("dispatcher") -> 0.7f
+            MetaRepository.hasItem("stabilizer") -> 0.8f
+            else -> 1f
+        }
         var load = s.load + 2f * growthMultiplier * dt
         var nextSpike = s.nextSpikeIn - dt
         var spikeFlash = s.spikeFlash
@@ -85,8 +90,16 @@ class SubstationViewModel : ViewModel() {
         val s = _state.value
         if (!s.isRunning) return
         if (s.cooldowns[index] > 0f) return
-        val newLoad = (s.load - 20f).coerceAtLeast(0f)
-        val newCd = s.cooldowns.toMutableList().also { it[index] = 2f }
+
+        // Теперь у каждой линии своя сила и свой кулдаун
+        val (reduction, cooldown) = when (index) {
+            0 -> 30f to 4f // Аварийный: сильно сбрасывает, долгий кулдаун
+            1 -> 20f to 2f // Штатный: стандартный
+            else -> 40f to 6f // Форсаж: очень сильно сбрасывает, очень долгий кулдаун
+        }
+
+        val newLoad = (s.load - reduction).coerceAtLeast(0f)
+        val newCd = s.cooldowns.toMutableList().also { it[index] = cooldown }
         _state.value = s.copy(load = newLoad, cooldowns = newCd)
     }
 

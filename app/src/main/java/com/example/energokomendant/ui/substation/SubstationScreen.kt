@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.energokomendant.viewmodel.SubstationState
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun SubstationScreen(
@@ -215,29 +217,46 @@ fun LineButton(
         animationSpec = tween(300),
         label = "lineBg"
     )
+
+    val title = when (index) {
+        0 -> "Аварийный"
+        1 -> "Штатный"
+        else -> "Форсаж"
+    }
+    val subtitle = when (index) {
+        0 -> "-30%"
+        1 -> "-20%"
+        else -> "-40%"
+    }
+
     Box(
         modifier = modifier
             .height(80.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(bg),
+            .background(bg)
+            .clickable(enabled = ready, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        if (ready) {
-            Button(
-                onClick = onClick,
-                modifier = Modifier.fillMaxSize(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Линия ${index + 1}", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                    Text("−20%", color = Color.White, fontSize = 12.sp)
-                }
-            }
-        } else {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Линия ${index + 1}", color = Color.White.copy(alpha = 0.6f), fontSize = 14.sp)
-                Text("${cooldown.toInt() + 1}с", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
-            }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp)
+        ) {
+            Text(
+                text = title,
+                color = if (ready) Color.White else Color.White.copy(alpha = 0.6f),
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                softWrap = false,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = if (ready) subtitle else "${cooldown.toInt() + 1}с",
+                color = if (ready) Color.White else Color.White.copy(alpha = 0.6f),
+                fontSize = 12.sp,
+                maxLines = 1
+            )
         }
     }
 }

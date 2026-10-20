@@ -34,7 +34,7 @@ class GameViewModel : ViewModel() {
             comfort = (level.startComfort + comfortBonus).coerceAtMost(100),
             currentDay = 1,
             maxDays = level.maxDays,
-            currentEvent = LevelRepository.getRandomEvent(levelId, emptySet()),
+            currentEvent = LevelRepository.getRandomEvent(levelId, 1, emptySet()),
             eventResolved = false
         ).recalcForecast(level)
     }
@@ -105,12 +105,15 @@ class GameViewModel : ViewModel() {
 
         val incomeBonus = (if (MetaRepository.hasItem("led")) 5 else 0) +
                 (if (MetaRepository.hasEmployee("economist")) 10 else 0)
-        val income = state.comfort * 3 + incomeBonus
+
+        // Доход теперь x10, чтобы игрок мог выживать на старте
+        val income = state.comfort * 10 + incomeBonus
         val bill = state.consumption * level.tariff
         val newBudget = state.budget + income - bill
 
-        val newConsumption = state.consumption + 2
-        val newComfort = (state.comfort - 2).coerceIn(0, 100)
+        // Убрали тупую деградацию. Теперь выживание зависит только от решений игрока.
+        val newConsumption = state.consumption
+        val newComfort = state.comfort
 
         val nextDayNum = state.currentDay + 1
         val isBroke = newBudget < 0
@@ -130,8 +133,26 @@ class GameViewModel : ViewModel() {
 
         if (isLastDay || isGameOver) {
             val stars = if (isCompleted) calculateStars(newConsumption, newComfort, level) else 0
-            val reward = if (isCompleted) 20 + stars * 10 else 0
-            if (reward > 0) MetaRepository.addCoins(reward)
+
+            // Награда только за НОВЫЕ звёзды (рекорд). Первое прохождение — полная награда.
+            val reward: Int
+            if (isCompleted) {
+                val previousBest = MetaRepository.state.value.completedLevels[level.id] ?: 0
+                val newStars = (stars - previousBest).coerceAtLeast(0)
+                reward = if (previousBest == 0) {
+                    // Первое прохождение — награда за все звёзды
+                    20 + stars * 10
+                } else if (newStars > 0) {
+                    // Улучшил рекорд — награда только за новые
+                    newStars * 10
+                } else {
+                    // Не улучшил — без награды
+                    0
+                }
+                if (reward > 0) MetaRepository.addCoins(reward)
+            } else {
+                reward = 0
+            }
 
             _gameState.update {
                 it.copy(
@@ -156,7 +177,7 @@ class GameViewModel : ViewModel() {
                     consumption = newConsumption,
                     comfort = newComfort,
                     currentDay = nextDayNum,
-                    currentEvent = LevelRepository.getRandomEvent(level.id, it.purchasedUpgrades.toSet()),
+                    currentEvent = LevelRepository.getRandomEvent(level.id, nextDayNum, it.purchasedUpgrades.toSet()),
                     eventResolved = false,
                     lastActionMessage = null,
                     isBudgetCritical = newBudget < 50
@@ -168,7 +189,7 @@ class GameViewModel : ViewModel() {
     private fun GameState.recalcForecast(level: Level): GameState {
         val incomeBonus = (if (MetaRepository.hasItem("led")) 5 else 0) +
                 (if (MetaRepository.hasEmployee("economist")) 10 else 0)
-        val income = comfort * 3 + incomeBonus
+        val income = comfort * 10 + incomeBonus
         val bill = consumption * level.tariff
         return copy(
             forecastIncome = income,

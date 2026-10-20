@@ -5,6 +5,7 @@ data class Upgrade(
     val name: String,
     val description: String,
     val cost: Int,
-    val consumptionReduction: Int, // отрицательное число = экономия
-    val comfortChange: Int
+    val consumptionReduction: Int,
+    val comfortChange: Int,
+    val fact: String? = null
 )

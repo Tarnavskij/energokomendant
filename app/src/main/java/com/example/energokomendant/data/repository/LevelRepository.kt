@@ -11,63 +11,132 @@ object LevelRepository {
         Level(
             id = 1, title = "Уровень 1: Освещение",
             description = "Счёт за свет съедает бюджет. Найди способ платить меньше.",
-            startBudget = 300, startConsumption = 100, startComfort = 80,
+            startBudget = 500, startConsumption = 100, startComfort = 80,
             targetConsumption = 60, minComfort = 50, maxDays = 5, tariff = 3,
             upgrades = listOf(
-                Upgrade("led", "LED-лампы", "Заменить лампы накаливания (−20 кВт)", 300, -20, 5),
-                Upgrade("sensors", "Датчики движения", "Свет в пустых коридорах выключается (−20 кВт)", 400, -20, -5),
-                Upgrade("off_light", "Свет по требованию", "Подсобки без постоянного света (−10 кВт)", 0, -10, -10)
+                Upgrade(
+                    "led", "LED-лампы", "Заменить лампы накаливания (−20 кВт)", 300, -20, 5,
+                    fact = "LED-лампа расходует в 8 раз меньше энергии, чем лампа накаливания, и служит в 10 раз дольше."
+                ),
+                Upgrade(
+                    "sensors", "Датчики движения", "Свет в пустых коридорах выключается (−20 кВт)", 400, -20, -5,
+                    fact = "Датчики движения экономят до 30% электроэнергии на освещение коридоров и подъездов."
+                ),
+                Upgrade(
+                    "off_light", "Свет по требованию", "Подсобки без постоянного света (−10 кВт)", 0, -10, -10,
+                    fact = "Освещение пустых помещений — самая частая утечка энергии в зданиях: до 15% счёта."
+                )
             )
         ),
         Level(
             id = 2, title = "Уровень 2: Тепло",
             description = "Отопление дорого. Сохрани тепло, не заморозив жильцов.",
-            startBudget = 400, startConsumption = 150, startComfort = 70,
-            targetConsumption = 100, minComfort = 50, maxDays = 5, tariff = 4,
+            startBudget = 600, startConsumption = 120, startComfort = 80,
+            targetConsumption = 90, minComfort = 50, maxDays = 5, tariff = 4,
             upgrades = listOf(
-                Upgrade("windows", "Утеплить окна", "Стеклопакеты и герметизация (−30 кВт)", 600, -30, 15),
-                Upgrade("doors", "Доводчики", "Закрывают двери сами (−10 кВт)", 250, -10, 0),
-                Upgrade("temp_down", "Снизить отопление", "Минус 2°C, жильцам прохладнее (−20 кВт)", 0, -20, -15)
+                Upgrade(
+                    "windows", "Утеплить окна", "Стеклопакеты и герметизация (−30 кВт)", 600, -30, 15,
+                    fact = "Через неутеплённые окна уходит до 30% тепла. Стеклопакет снижает потери в 2 раза."
+                ),
+                Upgrade(
+                    "doors", "Доводчики", "Закрывают двери сами (−10 кВт)", 250, -10, 0,
+                    fact = "Открытая входная дверь зимой выпускает столько тепла, сколько обогреватель за час работы."
+                ),
+                Upgrade(
+                    "temp_down", "Снизить отопление", "Минус 2°C, жильцам прохладнее (−20 кВт)", 0, -20, -15,
+                    fact = "Каждый градус ниже в отопительный сезон экономит 5-7% энергии на отопление."
+                )
             )
         ),
         Level(
             id = 3, title = "Уровень 3: Техника",
             description = "Старая техника ест деньги. Обнови и научи жильцов.",
-            startBudget = 500, startConsumption = 200, startComfort = 85,
-            targetConsumption = 130, minComfort = 60, maxDays = 5, tariff = 5,
+            startBudget = 800, startConsumption = 150, startComfort = 80,
+            targetConsumption = 120, minComfort = 60, maxDays = 5, tariff = 4,
             upgrades = listOf(
-                Upgrade("fridge", "Холодильник А++", "Экономит 40% (−40 кВт)", 800, -40, 5),
-                Upgrade("wash", "Стирка 30°C", "Экономия на нагреве (−20 кВт)", 0, -20, -5),
-                Upgrade("standby", "Убрать standby", "Приборы не жрут в режиме ожидания (−15 кВт)", 150, -15, 0)
+                Upgrade(
+                    "fridge", "Холодильник А++", "Экономит 40% (−40 кВт)", 800, -40, 5,
+                    fact = "Холодильник класса А++ расходует на 40-50% меньше энергии, чем старый. Он работает 24/7."
+                ),
+                Upgrade(
+                    "wash", "Стирка 30°C", "Экономия на нагреве (−20 кВт)", 0, -20, -5,
+                    fact = "Стирка при 30°C вместо 60°C экономит до 50% энергии — нагрев воды — самая затратная часть."
+                ),
+                Upgrade(
+                    "standby", "Убрать standby", "Приборы не жрут в режиме ожидания (−15 кВт)", 150, -15, 0,
+                    fact = "Режим ожидания 10 приборов в квартире съедает до 300 кВт·ч в год — как месяц работы холодильника."
+                )
             )
         ),
         Level(
             id = 4, title = "Уровень 4: Солнце",
             description = "Солнечные панели — дорого, но окупаются. Пробуй.",
-            startBudget = 600, startConsumption = 180, startComfort = 80,
-            targetConsumption = 110, minComfort = 60, maxDays = 5, tariff = 6,
+            startBudget = 1000, startConsumption = 180, startComfort = 80,
+            targetConsumption = 140, minComfort = 60, maxDays = 5, tariff = 5,
             upgrades = listOf(
-                Upgrade("solar", "Солнечные панели", "Энергия от солнца (−60 кВт)", 1500, -60, 0),
-                Upgrade("solar_water", "Солнечный нагреватель", "Горячая вода бесплатно (−30 кВт)", 900, -30, 5)
+                Upgrade(
+                    "solar", "Солнечные панели", "Энергия от солнца (−60 кВт)", 1500, -60, 0,
+                    fact = "Одна солнечная панель за год вырабатывает столько энергии, сколько нужно на 2000 часов работы LED-лампы."
+                ),
+                Upgrade(
+                    "solar_water", "Солнечный нагреватель", "Горячая вода бесплатно (−30 кВт)", 900, -30, 5,
+                    fact = "Солнечный водонагреватель покрывает до 70% годовой потребности в горячей воде в средней полосе."
+                )
             )
         ),
         Level(
             id = 5, title = "Уровень 5: Умный дом",
             description = "Финальная проверка. Автоматизируй всё или разорись.",
-            startBudget = 700, startConsumption = 250, startComfort = 90,
-            targetConsumption = 160, minComfort = 70, maxDays = 5, tariff = 7,
+            startBudget = 1500, startConsumption = 220, startComfort = 80,
+            targetConsumption = 160, minComfort = 70, maxDays = 5, tariff = 6,
             upgrades = listOf(
-                Upgrade("smart_plugs", "Умные розетки", "Отключают по расписанию (−30 кВт)", 800, -30, 5),
-                Upgrade("temp_sensors", "Датчики температуры", "Регулируют отопление (−20 кВт)", 600, -20, 10),
-                Upgrade("auto_light", "Умный свет", "Свет по расписанию (−40 кВт)", 1000, -40, 5)
+                Upgrade(
+                    "smart_plugs", "Умные розетки", "Отключают по расписанию (−30 кВт)", 800, -30, 5,
+                    fact = "Умные розетки снимают фантомное потребление техники, когда её никто не использует."
+                ),
+                Upgrade(
+                    "temp_sensors", "Датчики температуры", "Регулируют отопление (−20 кВт)", 600, -20, 10,
+                    fact = "Датчики температуры позволяют держать в каждой комнате свою норму — не топить пустые помещения."
+                ),
+                Upgrade(
+                    "auto_light", "Умный свет", "Свет по расписанию (−40 кВт)", 1000, -40, 5,
+                    fact = "Автоматизация освещения по датчикам и расписанию экономит до 40% на освещении."
+                )
             )
         )
     )
 
-    fun getRandomEvent(levelId: Int, purchased: Set<String>): GameEvent {
+    fun getRandomEvent(levelId: Int, day: Int, purchased: Set<String> = emptySet()): GameEvent {
         val pool = eventsByLevel[levelId] ?: emptyList()
-        val reactive = pool.filter { it.choices.size > 2 }.ifEmpty { pool }
-        return reactive.random()
+        if (pool.isEmpty()) return GameEvent("Спокойный день", "Ничего не случилось.", emptyList())
+
+        // Фильтруем события, заблокированные купленными улучшениями
+        val available = pool.filter { event ->
+            event.blockedByUpgrade == null || event.blockedByUpgrade !in purchased
+        }
+        if (available.isEmpty()) {
+            return GameEvent("Спокойный день", "В доме тихо — улучшения работают.", emptyList())
+        }
+
+        val base = available[(levelId * 10 + day * 3) % available.size]
+        return applyModifiers(base, purchased)
+    }
+
+    private fun applyModifiers(event: GameEvent, purchased: Set<String>): GameEvent {
+        val mitigator = event.mitigatedByUpgrade ?: return event
+        if (mitigator !in purchased) return event
+
+        // Улучшение сработало — уменьшаем эффект в 2 раза
+        return event.copy(
+            description = event.description + (event.mitigationNote?.let { "\n\n✅ $it" } ?: ""),
+            choices = event.choices.map { c ->
+                c.copy(
+                    budgetDelta = c.budgetDelta / 2,
+                    consumptionDelta = c.consumptionDelta / 2,
+                    comfortDelta = c.comfortDelta / 2
+                )
+            }
+        )
     }
 
     private val eventsByLevel: Map<Int, List<GameEvent>> = mapOf(
@@ -84,7 +153,7 @@ object LevelRepository {
                         isRisky = true,
                         riskSuccessMessage = "Инспектор оказался другом — отсрочка платежа!",
                         riskFailMessage = "Инспектор строгий — штраф!",
-                        budgetDelta = 250 // будет использовано как успех
+                        budgetDelta = 250
                     )
                 )
             ),
@@ -94,12 +163,9 @@ object LevelRepository {
                 listOf(
                     EventChoice("Включить свет", "Светло, но расход вырос.", comfortDelta = 10, consumptionDelta = 10),
                     EventChoice("Выдать фонарики", "Дешевле, но неуклюже.", budgetDelta = -50, comfortDelta = 3),
-                    EventChoice(
-                        "Пусть привыкают",
-                        "Жильцы злятся.",
-                        comfortDelta = -15
-                    )
-                )
+                    EventChoice("Пусть привыкают", "Жильцы злятся.", comfortDelta = -15)
+                ),
+                blockedByUpgrade = "sensors"
             ),
             GameEvent(
                 "Соседи предлагают скинуться на LED",
@@ -134,7 +200,9 @@ object LevelRepository {
                         riskFailMessage = "Не нашли, только потратились.",
                         budgetDelta = -100
                     )
-                )
+                ),
+                mitigatedByUpgrade = "windows",
+                mitigationNote = "Утеплённые окна держат тепло — эффект ослаблен вдвое."
             ),
             GameEvent(
                 "Город выделил субсидию",
@@ -161,7 +229,8 @@ object LevelRepository {
                     EventChoice("Починить", "Дорого, но работает.", budgetDelta = -150, comfortDelta = 5),
                     EventChoice("Купить новый", "Инвестиция в экономию.", budgetDelta = -400, consumptionDelta = -25),
                     EventChoice("Оставить", "Портится еда.", comfortDelta = -15)
-                )
+                ),
+                blockedByUpgrade = "fridge"
             ),
             GameEvent(
                 "Стиралка работает в пик",
@@ -169,7 +238,8 @@ object LevelRepository {
                 listOf(
                     EventChoice("Договориться о дневной стирке", "Помогло.", consumptionDelta = -10, comfortDelta = -5),
                     EventChoice("Купить таймеры", "Автоматика.", budgetDelta = -150, consumptionDelta = -15)
-                )
+                ),
+                blockedByUpgrade = "wash"
             ),
             GameEvent(
                 "Акция в магазине техники",
@@ -193,7 +263,9 @@ object LevelRepository {
                 listOf(
                     EventChoice("Включить сеть", "Расход вырос.", consumptionDelta = 15),
                     EventChoice("Сэкономить", "Жильцы недовольны.", comfortDelta = -5)
-                )
+                ),
+                mitigatedByUpgrade = "solar",
+                mitigationNote = "Панели дают запас даже в пасмурный день."
             ),
             GameEvent(
                 "Пик солнца",
@@ -234,7 +306,8 @@ object LevelRepository {
                         riskFailMessage = "Сломалось ещё сильнее.",
                         consumptionDelta = 20
                     )
-                )
+                ),
+                blockedByUpgrade = "auto_light"
             ),
             GameEvent(
                 "Жильцы просят инструктаж",

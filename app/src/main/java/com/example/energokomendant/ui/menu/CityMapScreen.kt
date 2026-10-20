@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CityMapScreen(
     coins: Int,
+    schoolBest: Int,
     onOpenHouse: () -> Unit,
     onOpenSubstation: () -> Unit,
     onOpenSchool: () -> Unit,
@@ -151,9 +152,9 @@ fun CityMapScreen(
 
         CityObjectCard(
             title = "🏫 Школа",
-            subtitle = "Головоломка · скоро",
+            subtitle = if (schoolBest > 0) "Головоломка · рекорд $schoolBest/3" else "Головоломка · найди утечки",
             color = Color(0xFF388E3C),
-            locked = true,
+            locked = false,
             onClick = onOpenSchool
         ) { mod ->
             Canvas(modifier = mod) {
